@@ -1,0 +1,124 @@
+// Copy this text, paste to https://dbdiagram.io/d
+// Or, https://databasediagram.com/app
+// Or, view in VSCode with extension: "DBML Live Preview"
+
+Project DBML {
+  Note: '''
+AutographRequest: Keeps record of autograph requests by fans for specific players.
+Fan: Represents a fan placing an order for merchandise.
+Player: Stores player information including name, birthdate, position, and team.
+Benefit: Tracks potential benefits for each player including medical and financial.
+CareerStat: Aggregates career statistics for players.
+HistoricTeam: Contains historical data about teams that have existed in the past.
+Merchandise: Tracks available marketing merchandise and whether they are autographed.
+Order: Holds information about orders from fans for merchandise items.
+Position: Stores data about football player positions.
+Team: Stores information about teams, including name, city, date they were formed, and date they ceased operations.
+SignedMerchandise: Records signed merchandise available for fans.
+Statistic: Records player statistics including games played, touchdowns, and yards.
+'''
+}
+
+Table AutographRequest {
+    id INTEGER [primary key]
+    player_id INTEGER 
+    fan_id INTEGER 
+    }
+
+Table Fan {
+    id INTEGER [primary key]
+    name VARCHAR 
+    email VARCHAR 
+    address VARCHAR 
+    }
+
+Table Player {
+    id INTEGER [primary key]
+    name VARCHAR 
+    birthdate DATE 
+    position_id INTEGER 
+    team_id INTEGER 
+    }
+
+Table Benefit {
+    id INTEGER [primary key]
+    player_id INTEGER 
+    medical VARCHAR 
+    financial VARCHAR 
+    }
+
+Table CareerStat {
+    id INTEGER [primary key]
+    player_id INTEGER 
+    total_games INTEGER 
+    total_touchdowns INTEGER 
+    average_yards FLOAT 
+    }
+
+Table HistoricTeam {
+    id INTEGER [primary key]
+    name VARCHAR 
+    city VARCHAR 
+    date_formed DATE 
+    date_ceased DATE 
+    }
+
+Table Merchandise {
+    id INTEGER [primary key]
+    item_name VARCHAR 
+    is_autographed BOOLEAN 
+    price FLOAT 
+    }
+
+Table Order {
+    id INTEGER [primary key]
+    fan_id INTEGER 
+    merchandise_id INTEGER 
+    order_date DATE 
+    quantity INTEGER 
+    total_price FLOAT 
+    }
+
+Table Position {
+    id INTEGER [primary key]
+    title VARCHAR 
+    season_start DATE 
+    season_end DATE 
+    }
+
+Table Team {
+    id INTEGER [primary key]
+    name VARCHAR 
+    city VARCHAR 
+    date_formed DATE 
+    date_ceased DATE 
+    }
+
+Table SignedMerchandise {
+    id INTEGER [primary key]
+    merchandise_id INTEGER 
+    player_id INTEGER 
+    }
+
+Table Statistic {
+    id INTEGER [primary key]
+    player_id INTEGER 
+    games_played INTEGER 
+    touchdowns INTEGER 
+    yards INTEGER 
+    }
+
+
+
+// Relationships
+    Ref: AutographRequest.(fan_id) < Fan.(id)
+    Ref: AutographRequest.(player_id) < Player.(id)
+    Ref: Player.(position_id) < Position.(id)
+    Ref: Player.(team_id) < Team.(id)
+    Ref: Benefit.(player_id) < Player.(id)
+    Ref: CareerStat.(player_id) < Player.(id)
+    Ref: Order.(fan_id) < Fan.(id)
+    Ref: Order.(merchandise_id) < Merchandise.(id)
+    Ref: SignedMerchandise.(merchandise_id) < Merchandise.(id)
+    Ref: SignedMerchandise.(player_id) < Player.(id)
+    Ref: Statistic.(player_id) < Player.(id)

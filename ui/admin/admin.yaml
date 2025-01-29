@@ -1,0 +1,353 @@
+about:
+  date: January 29, 2025 04:40:08
+  recent_changes: works with modified safrs-react-admin
+  version: 0.0.0
+api_root: '{http_type}://{swagger_host}:{port}/{api}'
+authentication: '{system-default}'
+info:
+  number_relationships: 11
+  number_tables: 12
+info_toggle_checked: true
+resources:
+  AutographRequest:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: fan_id
+      required: true
+    - name: player_id
+      required: true
+    description: Keeps record of autograph requests by fans for specific players.
+    info_list: Keeps record of autograph requests by fans for specific players.
+    tab_groups:
+    - direction: toone
+      fks:
+      - fan_id
+      name: fan
+      resource: Fan
+    - direction: toone
+      fks:
+      - player_id
+      name: player
+      resource: Player
+    type: AutographRequest
+    user_key: id
+  Benefit:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: player_id
+      required: true
+    - name: medical
+    - name: financial
+    description: Tracks potential benefits for each player including medical and financial.
+    info_list: Tracks potential benefits for each player including medical and financial.
+    tab_groups:
+    - direction: toone
+      fks:
+      - player_id
+      name: player
+      resource: Player
+    type: Benefit
+    user_key: id
+  CareerStat:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: player_id
+      required: true
+    - name: total_games
+    - name: total_touchdowns
+    - name: average_yards
+    description: Aggregates career statistics for players.
+    info_list: Aggregates career statistics for players.
+    tab_groups:
+    - direction: toone
+      fks:
+      - player_id
+      name: player
+      resource: Player
+    type: CareerStat
+    user_key: id
+  Fan:
+    attributes:
+    - label: ' name*'
+      name: name
+      required: true
+      search: true
+      sort: true
+    - name: email
+    - name: address
+    - name: id
+    description: Represents a fan placing an order for merchandise.
+    info_list: Represents a fan placing an order for merchandise.
+    tab_groups:
+    - direction: tomany
+      fks:
+      - fan_id
+      name: AutographRequestList
+      resource: AutographRequest
+    - direction: tomany
+      fks:
+      - fan_id
+      name: OrderList
+      resource: Order
+    type: Fan
+    user_key: name
+  HistoricTeam:
+    attributes:
+    - label: ' name*'
+      name: name
+      required: true
+      search: true
+      sort: true
+    - name: city
+    - name: id
+    - name: date_formed
+      type: DATE
+    - name: date_ceased
+      type: DATE
+    description: Contains historical data about teams that have existed in the past.
+    info_list: Contains historical data about teams that have existed in the past.
+    type: HistoricTeam
+    user_key: name
+  Merchandise:
+    attributes:
+    - label: ' item_name*'
+      name: item_name
+      required: true
+      search: true
+      sort: true
+    - name: price
+    - name: id
+    - name: is_autographed
+      type: Boolean
+    description: Tracks available marketing merchandise and whether they are autographed.
+    info_list: Tracks available marketing merchandise and whether they are autographed.
+    tab_groups:
+    - direction: tomany
+      fks:
+      - merchandise_id
+      name: OrderList
+      resource: Order
+    - direction: tomany
+      fks:
+      - merchandise_id
+      name: SignedMerchandiseList
+      resource: SignedMerchandise
+    type: Merchandise
+    user_key: item_name
+  Order:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: fan_id
+      required: true
+    - name: merchandise_id
+      required: true
+    - name: order_date
+      type: DATE
+    - name: quantity
+    - name: total_price
+    description: Holds information about orders from fans for merchandise items.
+    info_list: Holds information about orders from fans for merchandise items.
+    tab_groups:
+    - direction: toone
+      fks:
+      - fan_id
+      name: fan
+      resource: Fan
+    - direction: toone
+      fks:
+      - merchandise_id
+      name: merchandise
+      resource: Merchandise
+    type: Order
+    user_key: id
+  Player:
+    attributes:
+    - label: ' name*'
+      name: name
+      required: true
+      search: true
+      sort: true
+    - name: position_id
+    - name: team_id
+    - name: birthdate
+      type: DATE
+    - name: id
+    description: Stores player information including name, birthdate, position, and
+      team.
+    info_list: Stores player information including name, birthdate, position, and
+      team.
+    tab_groups:
+    - direction: tomany
+      fks:
+      - player_id
+      name: AutographRequestList
+      resource: AutographRequest
+    - direction: tomany
+      fks:
+      - player_id
+      name: BenefitList
+      resource: Benefit
+    - direction: tomany
+      fks:
+      - player_id
+      name: CareerStatList
+      resource: CareerStat
+    - direction: tomany
+      fks:
+      - player_id
+      name: SignedMerchandiseList
+      resource: SignedMerchandise
+    - direction: tomany
+      fks:
+      - player_id
+      name: StatisticList
+      resource: Statistic
+    - direction: toone
+      fks:
+      - position_id
+      name: position
+      resource: Position
+    - direction: toone
+      fks:
+      - team_id
+      name: team
+      resource: Team
+    type: Player
+    user_key: name
+  Position:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: title
+      required: true
+    - name: season_start
+      type: DATE
+    - name: season_end
+      type: DATE
+    description: Stores data about football player positions.
+    info_list: Stores data about football player positions.
+    tab_groups:
+    - direction: tomany
+      fks:
+      - position_id
+      name: PlayerList
+      resource: Player
+    type: Position
+    user_key: id
+  SignedMerchandise:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: merchandise_id
+      required: true
+    - name: player_id
+      required: true
+    description: Records signed merchandise available for fans.
+    info_list: Records signed merchandise available for fans.
+    tab_groups:
+    - direction: toone
+      fks:
+      - merchandise_id
+      name: merchandise
+      resource: Merchandise
+    - direction: toone
+      fks:
+      - player_id
+      name: player
+      resource: Player
+    type: SignedMerchandise
+    user_key: id
+  Statistic:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: player_id
+      required: true
+    - name: touchdowns
+    - name: yards
+    - name: games_played
+    description: Records player statistics including games played, touchdowns, and
+      yards.
+    info_list: Records player statistics including games played, touchdowns, and yards.
+    tab_groups:
+    - direction: toone
+      fks:
+      - player_id
+      name: player
+      resource: Player
+    type: Statistic
+    user_key: id
+  Team:
+    attributes:
+    - label: ' name*'
+      name: name
+      required: true
+      search: true
+      sort: true
+    - name: city
+    - name: id
+    - name: date_formed
+      type: DATE
+    - name: date_ceased
+      type: DATE
+    description: Stores information about teams, including name, city, date they were
+      formed, and date they ceased operations.
+    info_list: Stores information about teams, including name, city, date they were
+      formed, and date they ceased operations.
+    tab_groups:
+    - direction: tomany
+      fks:
+      - team_id
+      name: PlayerList
+      resource: Player
+    type: Team
+    user_key: name
+settings:
+  HomeJS: /admin-app/home.js
+  max_list_columns: 8
+  style_guide:
+    applicationLocales:
+    - en
+    - es
+    currency_symbol: $
+    currency_symbol_position: left
+    date_format: LL
+    decimal_max: '1000000000'
+    decimal_min: '0'
+    decimal_separator: .
+    detail_mode: tab
+    edit_on_mode: dblclick
+    exclude_listpicker: false
+    include_translation: 'false'
+    keycloak_client_id: alsclient
+    keycloak_realm: kcals
+    keycloak_url: http://localhost:8080
+    locale: en
+    max_decimal_digits: '4'
+    min_decimal_digits: '2'
+    new_mode: dialog
+    pick_style: list
+    row_height: small,
+    serviceType: OntimizeEE
+    startSessionPath: /auth/login
+    style: light
+    thousand_separator: ','
+    use_keycloak: 'false'
