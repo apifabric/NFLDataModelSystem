@@ -1,0 +1,53 @@
+{
+    "rules": [],
+    "models": [
+        {
+            "classname": "Fan",
+            "code": "class Fan(Base):  # type: ignore\n    \"\"\"\n    description: Represents a fan placing an order for merchandise.\n    \"\"\"\n    __tablename__ = 'fan'\n    _s_collection_name = 'Fan'  # type: ignore\n\n    id = Column(Integer, primary_key=True)\n    name = Column(String, nullable=False)\n    email = Column(String)\n    address = Column(String)\n\n    # parent relationships (access parent)\n\n    # child relationships (access children)\n    OrderList : Mapped[List[\"Order\"]] = relationship(back_populates=\"fan\")\n    AutographRequestList : Mapped[List[\"AutographRequest\"]] = relationship(back_populates=\"fan\")"
+        },
+        {
+            "classname": "HistoricTeam",
+            "code": "class HistoricTeam(Base):  # type: ignore\n    \"\"\"\n    description: Contains historical data about teams that have existed in the past.\n    \"\"\"\n    __tablename__ = 'historic_team'\n    _s_collection_name = 'HistoricTeam'  # type: ignore\n\n    id = Column(Integer, primary_key=True)\n    name = Column(String, nullable=False)\n    city = Column(String)\n    date_formed = Column(Date)\n    date_ceased = Column(Date)"
+        },
+        {
+            "classname": "Merchandise",
+            "code": "class Merchandise(Base):  # type: ignore\n    \"\"\"\n    description: Tracks available marketing merchandise and whether they are autographed.\n    \"\"\"\n    __tablename__ = 'merchandise'\n    _s_collection_name = 'Merchandise'  # type: ignore\n\n    id = Column(Integer, primary_key=True)\n    item_name = Column(String, nullable=False)\n    is_autographed = Column(Boolean)\n    price = Column(Float)\n\n    # parent relationships (access parent)\n\n    # child relationships (access children)\n    OrderList : Mapped[List[\"Order\"]] = relationship(back_populates=\"merchandise\")\n    SignedMerchandiseList : Mapped[List[\"SignedMerchandise\"]] = relationship(back_populates=\"merchandise\")"
+        },
+        {
+            "classname": "Position",
+            "code": "class Position(Base):  # type: ignore\n    \"\"\"\n    description: Stores data about football player positions.\n    \"\"\"\n    __tablename__ = 'position'\n    _s_collection_name = 'Position'  # type: ignore\n\n    id = Column(Integer, primary_key=True)\n    title = Column(String, nullable=False)\n    season_start = Column(Date)\n    season_end = Column(Date)\n\n    # parent relationships (access parent)\n\n    # child relationships (access children)\n    PlayerList : Mapped[List[\"Player\"]] = relationship(back_populates=\"position\")"
+        },
+        {
+            "classname": "Team",
+            "code": "class Team(Base):  # type: ignore\n    \"\"\"\n    description: Stores information about teams, including name, city, date they were formed, and date they ceased operations.\n    \"\"\"\n    __tablename__ = 'team'\n    _s_collection_name = 'Team'  # type: ignore\n\n    id = Column(Integer, primary_key=True)\n    name = Column(String, nullable=False)\n    city = Column(String)\n    date_formed = Column(Date)\n    date_ceased = Column(Date)\n\n    # parent relationships (access parent)\n\n    # child relationships (access children)\n    PlayerList : Mapped[List[\"Player\"]] = relationship(back_populates=\"team\")"
+        },
+        {
+            "classname": "Order",
+            "code": "class Order(Base):  # type: ignore\n    \"\"\"\n    description: Holds information about orders from fans for merchandise items.\n    \"\"\"\n    __tablename__ = 'order'\n    _s_collection_name = 'Order'  # type: ignore\n\n    id = Column(Integer, primary_key=True)\n    fan_id = Column(ForeignKey('fan.id'), nullable=False)\n    merchandise_id = Column(ForeignKey('merchandise.id'), nullable=False)\n    order_date = Column(Date)\n    quantity = Column(Integer)\n    total_price = Column(Float)\n\n    # parent relationships (access parent)\n    fan : Mapped[\"Fan\"] = relationship(back_populates=(\"OrderList\"))\n    merchandise : Mapped[\"Merchandise\"] = relationship(back_populates=(\"OrderList\"))"
+        },
+        {
+            "classname": "Player",
+            "code": "class Player(Base):  # type: ignore\n    \"\"\"\n    description: Stores player information including name, birthdate, position, and team.\n    \"\"\"\n    __tablename__ = 'player'\n    _s_collection_name = 'Player'  # type: ignore\n\n    id = Column(Integer, primary_key=True)\n    name = Column(String, nullable=False)\n    birthdate = Column(Date)\n    position_id = Column(ForeignKey('position.id'))\n    team_id = Column(ForeignKey('team.id'))\n\n    # parent relationships (access parent)\n    position : Mapped[\"Position\"] = relationship(back_populates=(\"PlayerList\"))\n    team : Mapped[\"Team\"] = relationship(back_populates=(\"PlayerList\"))\n\n    # child relationships (access children)\n    AutographRequestList : Mapped[List[\"AutographRequest\"]] = relationship(back_populates=\"player\")\n    BenefitList : Mapped[List[\"Benefit\"]] = relationship(back_populates=\"player\")\n    CareerStatList : Mapped[List[\"CareerStat\"]] = relationship(back_populates=\"player\")\n    SignedMerchandiseList : Mapped[List[\"SignedMerchandise\"]] = relationship(back_populates=\"player\")\n    StatisticList : Mapped[List[\"Statistic\"]] = relationship(back_populates=\"player\")"
+        },
+        {
+            "classname": "AutographRequest",
+            "code": "class AutographRequest(Base):  # type: ignore\n    \"\"\"\n    description: Keeps record of autograph requests by fans for specific players.\n    \"\"\"\n    __tablename__ = 'autograph_request'\n    _s_collection_name = 'AutographRequest'  # type: ignore\n\n    id = Column(Integer, primary_key=True)\n    player_id = Column(ForeignKey('player.id'), nullable=False)\n    fan_id = Column(ForeignKey('fan.id'), nullable=False)\n\n    # parent relationships (access parent)\n    fan : Mapped[\"Fan\"] = relationship(back_populates=(\"AutographRequestList\"))\n    player : Mapped[\"Player\"] = relationship(back_populates=(\"AutographRequestList\"))"
+        },
+        {
+            "classname": "Benefit",
+            "code": "class Benefit(Base):  # type: ignore\n    \"\"\"\n    description: Tracks potential benefits for each player including medical and financial.\n    \"\"\"\n    __tablename__ = 'benefit'\n    _s_collection_name = 'Benefit'  # type: ignore\n\n    id = Column(Integer, primary_key=True)\n    player_id = Column(ForeignKey('player.id'), nullable=False)\n    medical = Column(String)\n    financial = Column(String)\n\n    # parent relationships (access parent)\n    player : Mapped[\"Player\"] = relationship(back_populates=(\"BenefitList\"))"
+        },
+        {
+            "classname": "CareerStat",
+            "code": "class CareerStat(Base):  # type: ignore\n    \"\"\"\n    description: Aggregates career statistics for players.\n    \"\"\"\n    __tablename__ = 'career_stats'\n    _s_collection_name = 'CareerStat'  # type: ignore\n\n    id = Column(Integer, primary_key=True)\n    player_id = Column(ForeignKey('player.id'), nullable=False)\n    total_games = Column(Integer)\n    total_touchdowns = Column(Integer)\n    average_yards = Column(Float)\n\n    # parent relationships (access parent)\n    player : Mapped[\"Player\"] = relationship(back_populates=(\"CareerStatList\"))"
+        },
+        {
+            "classname": "SignedMerchandise",
+            "code": "class SignedMerchandise(Base):  # type: ignore\n    \"\"\"\n    description: Records signed merchandise available for fans.\n    \"\"\"\n    __tablename__ = 'signed_merchandise'\n    _s_collection_name = 'SignedMerchandise'  # type: ignore\n\n    id = Column(Integer, primary_key=True)\n    merchandise_id = Column(ForeignKey('merchandise.id'), nullable=False)\n    player_id = Column(ForeignKey('player.id'), nullable=False)\n\n    # parent relationships (access parent)\n    merchandise : Mapped[\"Merchandise\"] = relationship(back_populates=(\"SignedMerchandiseList\"))\n    player : Mapped[\"Player\"] = relationship(back_populates=(\"SignedMerchandiseList\"))"
+        },
+        {
+            "classname": "Statistic",
+            "code": "class Statistic(Base):  # type: ignore\n    \"\"\"\n    description: Records player statistics including games played, touchdowns, and yards.\n    \"\"\"\n    __tablename__ = 'statistic'\n    _s_collection_name = 'Statistic'  # type: ignore\n\n    id = Column(Integer, primary_key=True)\n    player_id = Column(ForeignKey('player.id'), nullable=False)\n    games_played = Column(Integer)\n    touchdowns = Column(Integer)\n    yards = Column(Integer)\n\n    # parent relationships (access parent)\n    player : Mapped[\"Player\"] = relationship(back_populates=(\"StatisticList\"))"
+        }
+    ]
+}
